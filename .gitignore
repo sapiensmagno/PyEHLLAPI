@@ -1,0 +1,3 @@
+*.bak
+# .txt are merely temporary notes. Only .md files should be loaded.
+*.txt
