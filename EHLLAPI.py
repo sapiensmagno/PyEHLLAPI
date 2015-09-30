@@ -4,6 +4,7 @@ class Emulator(object):
        
     hllApi = None
     
+    # ctypes conversion to avoid repetition inside other methods
     def _func_num(self, arg):
         return c_int(arg)
         
