@@ -4,9 +4,11 @@ from ctypes import c_int, c_char_p, c_void_p, byref, WinDLL, WINFUNCTYPE
 class Emulator(object):
        
     hllApi = None
+    _last_func_num = None
     
     # ctypes conversion to avoid repetition inside other methods
     def _func_num(self, arg):
+        self._last_func_num = arg
         return c_int(arg)
         
     def _data_str(self, arg):
@@ -55,7 +57,11 @@ class Emulator(object):
             except KeyError:
                 snd_txt = keys # Couldn't find a match in the dictionary.   
         return self.hllApi (byref(self._func_num(3)), self._data_str(snd_txt), byref(self._lenght(txt_lenght)), byref(self._ps_position(0)))
-        
+    
+    def get_cursor(self):
+            pos = self._lenght(0)
+            self.hllApi (byref(self._func_num(7)), self._data_str(""), byref(pos), byref(self._ps_position(0)))
+            return pos
     # TODO: 
     # def getconnectionstatus
     # def cursorcoordconversion
