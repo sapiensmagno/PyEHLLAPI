@@ -1,3 +1,4 @@
+# *-* coding: utf-8 *-*
 from ctypes import c_int, c_char_p, c_void_p, byref, WinDLL, WINFUNCTYPE
 
 class Emulator(object):
