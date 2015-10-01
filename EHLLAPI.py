@@ -4,21 +4,19 @@ from ctypes import c_int, c_char_p, c_void_p, byref, WinDLL, WINFUNCTYPE
 class Emulator(object):
        
     hllApi = None
-    _last_func_num = None
-    
-    # ctypes conversion to avoid repetition inside other methods
-    def _func_num(self, arg):
-        self._last_func_num = arg
-        return c_int(arg)
+    _func_num = None
+    _data_str = None
+    _lenght = None
+    _ps_position = None
         
-    def _data_str(self, arg):
-        return c_char_p(arg)
-        
-    def _lenght(self, arg):
-        return c_int(arg)
-        
-    def _ps_position(self, arg):
-        return c_int(arg)
+    def _error_catcher(self, hllapi_call):
+        def decorated():
+            from EmulatorErrors import EmulatorError
+            return_value = hllapi_call(byref(c_int(self._func_num)), c_char_p(self._data_str), byref(c_int(x)), byref(c_int(self._ps_position)))
+            # If all goes as expected, return code should be 0.
+            if return_value <> 0: raise EmulatorError (self._func_num, return_value)
+            return return_value
+        return decorated
         
     def __init__(self):
         # Load DLL.
@@ -28,19 +26,29 @@ class Emulator(object):
         hllApiParams = (1, "_func_num", 0), (1, "_data_str", 0), (1, "_lenght",0), (1, "_ps_position",0)
         # Map the call ("HLLAPI(...)") to a Python name.
         self.hllApi = hllApiProto (("HLLAPI", hllDll), hllApiParams)
+        # Raise errors based on hllApi return code
+        self.hllApi = self._error_catcher(self.hllApi)
         
     def __enter__(self):
-        self.connect_presentation_space()
+        self.connect()
     
     def __exit__(self, *args):
-        self.disconnect_presentation_space()
+        self.disconnect()
     
-    def connect_presentation_space(self):
+    def connect(self):
         # Set up the variables and call the Python name with them.
-        return self.hllApi (byref(self._func_num(1)), self._data_str("A"), byref(self._lenght(1)), byref(self._ps_position(0)))
+        self._func_num=1
+        self._data_str="A"
+        self._lenght=1
+        self._ps_position=0
+        return self.hllApi ()
     
-    def disconnect_presentation_space(self):
-        return self.hllApi (byref(self._func_num(2)), self._data_str("A"), byref(self._lenght(1)), byref(self._ps_position(0)))
+    def disconnect(self):
+        self._func_num=2
+        self._data_str="A"
+        self._lenght=1
+        self._ps_position=0
+        return self.hllApi ()
         
     def send_keys(self, keys):
         # Cases:  the argument ''keys'' is just a regular string, it is a string inside <> or it is inside <> because it is a special command.
@@ -59,9 +67,13 @@ class Emulator(object):
         return self.hllApi (byref(self._func_num(3)), self._data_str(snd_txt), byref(self._lenght(txt_lenght)), byref(self._ps_position(0)))
     
     def get_cursor(self):
-            pos = self._lenght(0)
-            self.hllApi (byref(self._func_num(7)), self._data_str(""), byref(pos), byref(self._ps_position(0)))
-            return pos
+            self._func_num=7
+            self._data_str=""
+            self._lenght=0
+            self._ps_position=0
+            # _lenght will be modified with the cursor position value
+            self.hllApi ()
+            return self._lenght
     # TODO: 
     # def getconnectionstatus
     # def cursorcoordconversion
