@@ -48,9 +48,7 @@ class Emulator(object):
         return self.hllApi (self._func_num(constants.DISCONNECT_PRESENTATION_SPACE), self._data_str(name), self._lenght(1), self._ps_position(0))
         
     def send_keys(self, keys):
-        # Cases:  the argument ''keys'' is just a regular string, it is a string inside <> or it is inside <> because it is a special command.
-        # TODO: if it's not a command, use Copy String to Field (33) or Copy String to Presentation Space (15) to send string
-        # TODO: split strings when len(keys) > 255     
+        # Possible cases: 1) the argument ''keys'' is just a regular string; 2) it is a string inside <>; 3) it is inside <> because it is a keyboard command.
         snd_txt = keys 
         txt_lenght = len(snd_txt)
         if snd_txt[0] == '<' and snd_txt[txt_lenght-1] == '>':
