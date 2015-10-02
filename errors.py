@@ -19,11 +19,16 @@ class EmulatorError(Exception):
                  9:"A system error was encountered."}
     query_cursor_error_list = {1:"Your program is not currently connected to a host session.",
                   9:"A system error was encountered."}
+    set_cursor_error_list = {1:"Your program is not connected to a host session.", 
+                 4:"The session is busy.", 
+                 7:"A cursor location less than 1 or greater than the size of the connected host presentation space was specified.",
+                 9:"A system error occurred."}
     # This dictionary associates each function code with an error list defined above.
     function_errors = {constants.CONNECT_PRESENTATION_SPACE:connect_error_list, 
               constants.DISCONNECT_PRESENTATION_SPACE:disconnect_error_list,
               constants.SEND_KEY:send_key_error_list, 
-              constants.QUERY_CURSOR_LOCATION:query_cursor_error_list}
+              constants.QUERY_CURSOR_LOCATION:query_cursor_error_list,
+              constants.SET_CURSOR:set_cursor_error_list}
 
     def __init__(self, func_num, return_code):
         self.error_case_list = self.function_errors[func_num] # returns a dictionary

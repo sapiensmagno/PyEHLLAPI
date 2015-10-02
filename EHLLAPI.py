@@ -62,13 +62,9 @@ class Emulator(object):
         return self.hllApi (self._func_num(constants.SEND_KEY), self._data_str(snd_txt), self._lenght(txt_lenght), self._ps_position(0))
     
     def get_cursor(self):
-        pos = self._lenght(0) # pos will be modified with the cursor position value
-        self.hllApi (self._func_num(constants.QUERY_CURSOR_LOCATION), self._data_str(""), pos, self._ps_position(0))
-        return pos.value
-        
-    # TODO: 
-    # def getconnectionstatus
-    # def cursorcoordconversion
-    # def getcursorposition
-    # def setcursorposition
-        
+        byte_pos = self._lenght(0) # byte_pos will be modified with the cursor position value
+        self.hllApi (self._func_num(constants.QUERY_CURSOR_LOCATION), self._data_str(""), byte_pos, self._ps_position(0))
+        return byte_pos.value
+    
+    def set_cursor(self, byte_pos):
+        return self.hllApi (self._func_num(constants.SET_CURSOR), self._data_str(""), self._lenght(0), self._ps_position(byte_pos))
