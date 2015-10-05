@@ -68,16 +68,14 @@ class Emulator(object):
     def set_cursor(self, byte_pos):
         return self.hllApi (self._func_num(constants.SET_CURSOR), self._data_str(""), self._lenght(0), self._ps_position(byte_pos))
         
-    def get_text(self, row1, column1, row2, column2):
+    def get_field(self, field_pos, field_len):
         txt = self._data_str("")
-        len = 50
-        pos = 10
+        len = field_len
+        pos = field_pos
         self.hllApi (self._func_num(constants.COPY_FIELD_TO_STRING), txt, self._lenght(len), self._ps_position(pos))
         return txt.value
-        # The return seems to be the same string. Must pass value byref or pass pointer only (which is equivalent...)
-        
-        
-        
+        # To use this one must know where a field starts and what's its lenght. TODO: get_text(row1, col1, row2, col2)
+
         
         
         
