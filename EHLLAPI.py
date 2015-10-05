@@ -5,6 +5,7 @@ from errors import EmulatorError
     
 class Emulator(object):
     _hllApi = None
+   
     def _func_num(self, arg):
         return c_int(arg)
     
@@ -66,3 +67,24 @@ class Emulator(object):
     
     def set_cursor(self, byte_pos):
         return self.hllApi (self._func_num(constants.SET_CURSOR), self._data_str(""), self._lenght(0), self._ps_position(byte_pos))
+        
+    def get_text(self, row1, column1, row2, column2):
+        txt = self._data_str("")
+        len = 50
+        pos = 10
+        self.hllApi (self._func_num(constants.COPY_FIELD_TO_STRING), txt, self._lenght(len), self._ps_position(pos))
+        return txt.value
+        # The return seems to be the same string. Must pass value byref or pass pointer only (which is equivalent...)
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
