@@ -74,7 +74,7 @@ class Emulator(object):
         pos = field_pos
         self.hllApi (self._func_num(constants.COPY_FIELD_TO_STRING), txt, self._lenght(len), self._ps_position(pos))
         return txt.value
-        # To use this one must know where a field starts and what's its lenght. TODO: get_text(row1, col1, row2, col2)
+        # To use this, one must know where a field starts and what's its lenght. TODO: get_text(row1, col1, row2, col2)
 
         
         
